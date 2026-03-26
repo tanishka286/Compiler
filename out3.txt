@@ -1,0 +1,11 @@
+Syntax error: expected TOKEN_SYMBOL ";" but got TOKEN_IDENTIFIER "a" at line 3, column 4
+Notice: This appears to be a repeated (habitual) mistake.
+Auto-fix applied (execution-only): missing ';'
+
+Line 3, Column 4:
+    ^
+Missing semicolon at end of statement.
+Statements must end with ';'.
+Example: <statement>;
+
+Program with statements parsed successfully

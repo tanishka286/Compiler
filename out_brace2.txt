@@ -1,0 +1,6 @@
+Syntax error: unexpected EOF inside block at line 4, column 11 (expected '}' or ';')
+
+Line 4, Column 11:
+           ^
+What went wrong: Expected TOKEN_SYMBOL "} or ;", but found TOKEN_EOF "".
+

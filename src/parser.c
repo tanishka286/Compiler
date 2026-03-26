@@ -96,6 +96,7 @@ void parse_program(void) {
         /* Look at the next token to decide: '}' ends block, otherwise a stmt */
         token = get_next_token();
 
+process_statement:
         if (token.type == TOKEN_EOF) {
             printf("Syntax error: unexpected EOF inside block at line %d, column %d "
                    "(expected '}' or ';')\n",
@@ -126,12 +127,8 @@ void parse_program(void) {
             Token semi = get_next_token();
             if (!(semi.type == TOKEN_SYMBOL && strcmp(semi.lexeme, ";") == 0)) {
                 if (report_syntax_error("TOKEN_SYMBOL", ";", &semi) == AUTOFIX_APPLIED) {
-                    /* Simulate semicolon consumed, continue parsing */
-                    if (semi.type == TOKEN_SYMBOL && strcmp(semi.lexeme, "}") == 0) {
-                        /* '}' will be handled by outer loop - set token and break */
-                        token = semi;
-                        break;
-                    }
+                    token = semi;
+                    goto process_statement;
                 }
                 return;
             }
@@ -241,12 +238,8 @@ void parse_program(void) {
             Token semi_print = get_next_token();
             if (!(semi_print.type == TOKEN_SYMBOL && strcmp(semi_print.lexeme, ";") == 0)) {
                 if (report_syntax_error("TOKEN_SYMBOL", ";", &semi_print) == AUTOFIX_APPLIED) {
-                    /* Simulate semicolon consumed, continue parsing */
-                    if (semi_print.type == TOKEN_SYMBOL && strcmp(semi_print.lexeme, "}") == 0) {
-                        /* '}' will be handled by outer loop - set token and break */
-                        token = semi_print;
-                        break;
-                    }
+                    token = semi_print;
+                    goto process_statement;
                 }
                 return;
             }
@@ -272,12 +265,8 @@ void parse_program(void) {
             Token semi2 = get_next_token();
             if (!(semi2.type == TOKEN_SYMBOL && strcmp(semi2.lexeme, ";") == 0)) {
                 if (report_syntax_error("TOKEN_SYMBOL", ";", &semi2) == AUTOFIX_APPLIED) {
-                    /* Simulate semicolon consumed, continue parsing */
-                    if (semi2.type == TOKEN_SYMBOL && strcmp(semi2.lexeme, "}") == 0) {
-                        /* '}' will be handled by outer loop - set token and break */
-                        token = semi2;
-                        break;
-                    }
+                    token = semi2;
+                    goto process_statement;
                 }
                 return;
             }
@@ -314,8 +303,7 @@ void parse_program(void) {
                     if (autofix_try("syntax_error", "TOKEN_SYMBOL", ";", &token) == AUTOFIX_APPLIED) {
                         printf("Auto-fix applied (execution-only): missing ';'\n");
                         highlight_error("syntax_error", "TOKEN_SYMBOL", ";", &token);
-                        /* Simulate semicolon consumed, then handle '}' in outer loop */
-                        break; /* Exit statement loop, '}' will be handled by outer loop */
+                        goto process_statement;
                     }
                 }
                 highlight_error("syntax_error", "TOKEN_SYMBOL", ";", &token);

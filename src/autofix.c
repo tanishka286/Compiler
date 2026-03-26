@@ -22,15 +22,10 @@ AutofixResult autofix_try(const char *error_type,
         return AUTOFIX_NOT_APPLIED;
     }
     
-    /* Auto-fix case 1: Missing semicolon before '}' */
-    if (strcmp(expected_lexeme, ";") == 0 &&
-        actual_token->type == TOKEN_SYMBOL &&
-        strcmp(actual_token->lexeme, "}") == 0) {
+    /* Auto-fix case 1 & 2: Missing semicolon at end of statement and before brace */
+    if (strcmp(expected_lexeme, ";") == 0) {
         return AUTOFIX_APPLIED;
     }
-    
-    /* Auto-fix case 2: Missing semicolon at end of statement (when we get '}' instead) */
-    /* This is handled by the same check above */
     
     /* Auto-fix case 3: Missing semicolon at end of statement (when we get EOF) */
     /* Note: We don't auto-fix EOF cases as they're not safe to continue */

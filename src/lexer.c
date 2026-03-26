@@ -44,7 +44,7 @@ Token get_next_token(void) {
         if (c == '\n') {
             current_line++;
             current_column = 0;
-        } else if (c == ' ' || c == '\t') {
+        } else if (c == ' ' || c == '\t' || c == '\r') {
             // Continue skipping whitespace
         } else {
             // Non-whitespace character found
