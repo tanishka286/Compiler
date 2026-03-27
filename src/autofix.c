@@ -1,11 +1,12 @@
 // Temporary auto-correction
 
 #include <string.h>
+#include "config.h"
 #include "lexer.h"
 #include "autofix.h"
 
 static int autofix_count = 0;
-static int autofixed_lines[100];
+static int autofixed_lines[MAX_AUTOFIX_LINES];
 static int autofixed_line_count = 0;
 
 void autofix_reset_count(void) {
@@ -37,7 +38,7 @@ int autofix_already_applied_on_line(int line) {
 }
 
 void autofix_record_line(int line) {
-    if (autofixed_line_count >= 100) {
+    if (autofixed_line_count >= MAX_AUTOFIX_LINES) {
         return;
     }
 

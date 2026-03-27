@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "config.h"
 #include "lexer.h"
 #include "threshold.h"
 
@@ -71,6 +72,6 @@ int threshold_check(const char *error_type,
     
     fclose(profile);
     
-    /* Return TRUE if count >= 3, FALSE otherwise */
-    return (count >= 3);
+    /* Return TRUE if count >= HABIT_THRESHOLD, FALSE otherwise */
+    return (count >= HABIT_THRESHOLD);
 }

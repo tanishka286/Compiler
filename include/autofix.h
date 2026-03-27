@@ -1,9 +1,8 @@
 #ifndef AUTOFIX_H
 #define AUTOFIX_H
 
+#include "config.h"
 #include "lexer.h"
-
-#define MAX_AUTOFIX_PER_RUN 2
 
 typedef enum {
     AUTOFIX_NOT_APPLIED,
