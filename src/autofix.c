@@ -4,6 +4,67 @@
 #include "lexer.h"
 #include "autofix.h"
 
+static int autofix_count = 0;
+static int autofixed_lines[100];
+static int autofixed_line_count = 0;
+
+void autofix_reset_count(void) {
+    autofix_count = 0;
+}
+
+int autofix_limit_reached(void) {
+    return autofix_count >= MAX_AUTOFIX_PER_RUN;
+}
+
+void autofix_record_applied(void) {
+    autofix_count++;
+}
+
+void autofix_reset_lines(void) {
+    autofixed_line_count = 0;
+}
+
+int autofix_already_applied_on_line(int line) {
+    int i;
+
+    for (i = 0; i < autofixed_line_count; i++) {
+        if (autofixed_lines[i] == line) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void autofix_record_line(int line) {
+    if (autofixed_line_count >= 100) {
+        return;
+    }
+
+    autofixed_lines[autofixed_line_count] = line;
+    autofixed_line_count++;
+}
+
+int is_safe_autofix_error(const char *expected_token, const char *actual_token) {
+    if (expected_token == NULL || actual_token == NULL) {
+        return 0;
+    }
+
+    if (strcmp(expected_token, ";") != 0) {
+        return 0;
+    }
+
+    if (strcmp(actual_token, "TOKEN_IDENTIFIER") == 0) {
+        return 1;
+    }
+
+    if (strcmp(actual_token, "}") == 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
 AutofixResult autofix_try(const char *error_type,
                          const char *expected_type,
                          const char *expected_lexeme,

@@ -23,18 +23,21 @@ static int matches_fingerprint(const char *line,
                                const char *expected_type,
                                const char *expected_lexeme,
                                const char *actual_type,
-                               const char *actual_lexeme) {
+                               const char *actual_lexeme,
+                               int line_no,
+                               int column_no) {
     /* Format in file: error_type|expected_type|expected_lexeme|actual_type|actual_lexeme|line|column */
     char expected_fingerprint[512];
-    snprintf(expected_fingerprint, sizeof(expected_fingerprint), "%s|%s|%s|%s|%s|",
+    snprintf(expected_fingerprint, sizeof(expected_fingerprint), "%s|%s|%s|%s|%s|%d|%d",
              error_type ? error_type : "",
              expected_type ? expected_type : "",
              expected_lexeme ? expected_lexeme : "",
              actual_type ? actual_type : "",
-             actual_lexeme ? actual_lexeme : "");
-    
-    /* Check if line starts with the fingerprint (ignoring line/column at the end) */
-    return (strncmp(line, expected_fingerprint, strlen(expected_fingerprint)) == 0);
+             actual_lexeme ? actual_lexeme : "",
+             line_no,
+             column_no);
+
+    return (strcmp(line, expected_fingerprint) == 0);
 }
 
 int threshold_check(const char *error_type,
@@ -60,7 +63,8 @@ int threshold_check(const char *error_type,
         }
         
         if (matches_fingerprint(line, error_type, expected_type, expected_lexeme,
-                                actual_type, actual_lexeme)) {
+                                actual_type, actual_lexeme,
+                                actual_token->line, actual_token->column)) {
             count++;
         }
     }

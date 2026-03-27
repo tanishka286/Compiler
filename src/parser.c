@@ -39,13 +39,23 @@ static AutofixResult report_syntax_error(const char *expected_type,
            token->column);
     
     error_tracker_log("syntax_error", expected_type, expected_lexeme, token);
-    
-    if (threshold_check("syntax_error", expected_type, expected_lexeme, token)) {
+
+    int is_habit_detected = threshold_check("syntax_error", expected_type, expected_lexeme, token);
+    if (is_habit_detected) {
         printf("Notice: This appears to be a repeated (habitual) mistake.\n");
-        if (autofix_try("syntax_error", expected_type, expected_lexeme, token) == AUTOFIX_APPLIED) {
-            printf("Auto-fix applied (execution-only): missing ';'\n");
-            highlight_error("syntax_error", expected_type, expected_lexeme, token);
-            return AUTOFIX_APPLIED;
+        if (is_safe_autofix_error(expected_lexeme, parser_token_type_to_string(token->type))) {
+            if (autofix_already_applied_on_line(token->line)) {
+                printf("Auto-fix already applied on this line. Skipping.\n");
+            } else if (autofix_limit_reached()) {
+                printf("Auto-fix limit reached. Further errors require manual correction.\n");
+            } else if (autofix_try("syntax_error", expected_type, expected_lexeme, token) == AUTOFIX_APPLIED) {
+                autofix_record_applied();
+                autofix_record_line(token->line);
+                printf("Auto-fix applied (execution-only): missing ';'\n");
+                printf("Warning: This error was automatically corrected for execution only. Please fix it in your source code.\n");
+                highlight_error("syntax_error", expected_type, expected_lexeme, token);
+                return AUTOFIX_APPLIED;
+            }
         }
     }
     
@@ -298,12 +308,22 @@ process_statement:
                        token.line,
                        token.column);
                 error_tracker_log("syntax_error", "TOKEN_SYMBOL", ";", &token);
-                if (threshold_check("syntax_error", "TOKEN_SYMBOL", ";", &token)) {
+                int is_habit_detected = threshold_check("syntax_error", "TOKEN_SYMBOL", ";", &token);
+                if (is_habit_detected) {
                     printf("Notice: This appears to be a repeated (habitual) mistake.\n");
-                    if (autofix_try("syntax_error", "TOKEN_SYMBOL", ";", &token) == AUTOFIX_APPLIED) {
-                        printf("Auto-fix applied (execution-only): missing ';'\n");
-                        highlight_error("syntax_error", "TOKEN_SYMBOL", ";", &token);
-                        goto process_statement;
+                    if (is_safe_autofix_error(";", token.lexeme)) {
+                        if (autofix_already_applied_on_line(token.line)) {
+                            printf("Auto-fix already applied on this line. Skipping.\n");
+                        } else if (autofix_limit_reached()) {
+                            printf("Auto-fix limit reached. Further errors require manual correction.\n");
+                        } else if (autofix_try("syntax_error", "TOKEN_SYMBOL", ";", &token) == AUTOFIX_APPLIED) {
+                            autofix_record_applied();
+                            autofix_record_line(token.line);
+                            printf("Auto-fix applied (execution-only): missing ';'\n");
+                            printf("Warning: This error was automatically corrected for execution only. Please fix it in your source code.\n");
+                            highlight_error("syntax_error", "TOKEN_SYMBOL", ";", &token);
+                            goto process_statement;
+                        }
                     }
                 }
                 highlight_error("syntax_error", "TOKEN_SYMBOL", ";", &token);

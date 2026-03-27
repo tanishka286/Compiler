@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "lexer.h"
 #include "parser.h"
+#include "autofix.h"
 
 const char* token_type_to_string(TokenType type) {
     switch (type) {
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]) {
     }
 
     init_lexer(argv[1]);
+    autofix_reset_count();
+    autofix_reset_lines();
 
     parser_init();
     parse_program();

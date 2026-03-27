@@ -1,9 +1,3 @@
 syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
 syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
 syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
-syntax_error|TOKEN_SYMBOL|} or ;|TOKEN_EOF||4|11
-syntax_error|TOKEN_SYMBOL|} or ;|TOKEN_EOF||4|11
-syntax_error|TOKEN_SYMBOL|} or ;|TOKEN_EOF||4|11
-syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
-syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
-syntax_error|TOKEN_SYMBOL|;|TOKEN_IDENTIFIER|a|3|4
